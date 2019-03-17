@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "135632275351",
+    "firebase_url": "https://eko-city.firebaseio.com",
+    "project_id": "eko-city",
+    "storage_bucket": "eko-city.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:135632275351:android:174b6bc9231b14b1",
+        "android_client_info": {
+          "package_name": "org.nativescript.EkoCity"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "135632275351-84nkj0k9tbhqdbta07o5o8duah915cf1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBAvTSeob2ZVQV1qgXFrxIZ0lzHUGWpbRA"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

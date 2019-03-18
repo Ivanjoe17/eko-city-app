@@ -1,0 +1,29 @@
+<Page 
+loaded="loaded"
+xmlns:dd="nativescript-drop-down"
+>
+    <FlexboxLayout>
+        <StackLayout id="form" class="{{ isLoggingIn ? 'form' : 'form dark' }}"
+            orientation="vertical">
+            <Image src="~/images/logo.png" />
+
+            <TextField class="input input-border" id="email" text="{{ email }}"
+                hint="Email Address" keyboardType="email" autocorrect="false"
+                autocapitalizationType="none" />
+            <TextField class="input input-border" secure="true" text="{{ password }}"
+                hint="Password" />
+            <GridLayout class="{{ isLoggingIn ? 'dropdownHide' : 'dropdownShow' }}" rows="auto, auto, *" columns="auto, *">
+                <dd:DropDown id="{{dd}}"  items="{{ items }}" selectedIndex="{{ selectedIndex }}" 
+                            opened="dropDownOpened" closed="dropDownClosed" 
+                            selectedIndexChanged="dropDownSelectedIndexChanged"
+                            row="0" colSpan="2" />
+            </GridLayout>
+            <Button class="btn btn-primary" text="{{ isLoggingIn ? 'Sign in' : 'Sign up' }}"
+                tap="submit" />
+            <Button text="{{ isLoggingIn ? 'Sign up' : 'Back to login' }}"
+                class="link" tap="toggleDisplay" />
+                <ActivityIndicator busy="{{ isLoading }}" />
+        </StackLayout>
+    </FlexboxLayout>
+
+</Page>

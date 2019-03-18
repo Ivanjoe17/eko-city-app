@@ -5,20 +5,6 @@ purpose of the file is to pass control to the app’s first module.
 */
 require("./bundle-config");
 const application = require("tns-core-modules/application");
-var firebase = require("nativescript-plugin-firebase");
-
-firebase.init({
-    // Optionally pass in properties for database, authentication and cloud messaging,
-    // see their respective docs.
-}).then(
-    function () {
-        console.log("firebase.init done");
-    },
-    function (error) {
-        console.log("firebase.init error: " + error);
-    }
-);
-
 application.run({ moduleName: "app-root/app-root" });
 
 /*

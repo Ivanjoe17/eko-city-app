@@ -1,0 +1,27 @@
+.page {
+    font-family: "Varela", "Varela-Regular";
+}
+
+
+.action-bar {
+    background-color: rgb(26, 26, 27);
+    color: white;
+    font-family: "Varela", "Varela-Regular";
+}
+
+.brand-container {
+    flex-direction: column;
+    justify-content: center;
+}
+
+.brand-title {
+    text-align: center;
+    font-size: 50;
+    color: rgb(26, 26, 27);
+}
+
+.footnote {
+    text-align: center;
+    color: gray;
+    font-size: 20;
+}

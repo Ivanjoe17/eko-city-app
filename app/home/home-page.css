@@ -1,0 +1,22 @@
+.open-camera {
+    padding: 20;
+}
+
+#image-wrapper {
+    height: 30%;
+}
+
+.picture {
+    margin: 5;
+    border-width: 1;
+    border-radius: 5;
+    border-color: rgb(153, 153, 153);
+}
+
+#imageContainer {
+    align-items: flex-start;
+    padding: 20 10;
+    border-width: 2;
+    border-radius: 5;
+    border-color: rgb(78, 78, 78);
+}

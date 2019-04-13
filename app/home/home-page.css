@@ -2,10 +2,9 @@
     padding: 20;
 }
 
-#image-wrapper {
-    height: 30%;
+#image-wrapper{
+    height:150;
 }
-
 .picture {
     margin: 5;
     border-width: 1;
@@ -16,7 +15,57 @@
 #imageContainer {
     align-items: flex-start;
     padding: 20 10;
-    border-width: 2;
+}
+
+.lokacija{
+    margin:20;
+    padding:15;
+    color:#fff;
+    background-color:#4b4b4b;
+    text-align:center;
+}
+
+.prijavi{
+    width:100;
+    background-color: transparent;
+    border-width:0.1;
+    border-color:transparent;
+    color:blue;
+}
+.lokacija-container .margin-item{
+    margin-left:10;
+    padding:15;
+}
+.add-image-container{
+    width:100;
+    height:100;
+    margin: 5;
+    border-width: 3;
     border-radius: 5;
-    border-color: rgb(78, 78, 78);
+    border-color: rgb(153, 153, 153);
+    justify-content: center;
+    align-items: center;
+}
+.add-image-plus{
+    font-size:20;
+}
+.opis-container{
+    padding:15;
+    margin:10;
+    background-color:#4b4b4b;
+    color:#fff;
+    justify-content: center;
+    
+}
+
+.check-icon{
+    margin-left:5;
+    color:rgb(0, 226, 0);
+    font-size:17;
+}
+
+.times-icon{
+    margin-left:5;
+    color:rgb(226, 0, 0);
+    font-size:18;
 }

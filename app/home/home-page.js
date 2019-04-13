@@ -1,4 +1,5 @@
 const app = require("tns-core-modules/application");
+var dialogs = require("tns-core-modules/ui/dialogs");
 const camera = require("nativescript-camera");
 const imageModule = require("tns-core-modules/ui/image");
 const view = require("ui/core/view");
@@ -10,6 +11,8 @@ const imagepicker = require("nativescript-imagepicker");
 const bghttp = require("nativescript-background-http");
 const session = bghttp.session("file-upload");
 const frameModule = require("tns-core-modules/ui/frame");
+const customDialog = require("nativescript-cfalert-dialog");
+let cfalertDialogInstance = new customDialog.CFAlertDialog();
 var mapbox = require("nativescript-mapbox");
 var context = imagepicker.create({ mode: "multiple" }); // use "multiple" for multiple selection
 const prijaveCollection = firebaseApp.firestore().collection("prijave");
@@ -18,46 +21,20 @@ var page;
 let currentPictures = [];
 let pageModel = new HomeViewModel();
 var mapbox;
-
-function onMapReady(args) {
-    mapbox = args.map;
-    // you can tap into the native MapView objects (MGLMapView for iOS and com.mapbox.mapboxsdk.maps.MapView for Android)
-    var nativeMapView = args.ios ? args.ios : args.android;
-    console.log("Mapbox onMapReady for " + (args.ios ? "iOS" : "Android") + ", native object received: " + nativeMapView);
-
-    mapbox.setViewport({
-        bounds: {
-            north: 44.4666,
-            east: 13.1496,
-            south: 45.4666,
-            west: 14.2500
-        },
-        animated: true
-    });
-    mapbox.setZoomLevel({
-        level: 12, // mandatory, 0-20
-        animated: true // default true
-    })
-    mapbox.setOnMapLongClickListener((point) => {
-        console.log("Map longpressed at latitude: " + point.lat + ", longitude: " + point.lng);
-        mapbox.removeMarkers();
-        mapbox.addMarkers([{
-            lat: point.lat,
-            lng: point.lng,
-            title: 'Lokacija',
-            selected: true, // makes the callout show immediately when the marker is added (note: only 1 marker can be selected at a time)
-            onCalloutTap: function () { console.log("Odabrana lokacija za prijavu"); }
-        }]);
-
-    });
-}
-
-exports.onMapReady = onMapReady;
+let opisText="";
 
 function onNavigatingTo(args) {
     page = args.object;
+    
     page.bindingContext = pageModel;
     currentPictures = [];
+    var gotData=page.navigationContext;
+    if(gotData){
+        if(gotData.location){
+            console.log(gotData.location);
+        }
+    }
+    
     // openCamera();
 }
 
@@ -102,7 +79,6 @@ function addImage(imageAsset) {
 }
 
 function sendInfo() {
-    var textfield = view.getViewById(page, "naziv");
     let imageNames = [];
     for (let i = 0; i < currentPictures.length; i++) {
         let imageName = generate_random_string(3) + Date.now();
@@ -110,7 +86,7 @@ function sendInfo() {
         uploadImage(currentPictures[i], imageName);
     }
     let reportInfo = {
-        naziv: textfield.text,
+        naziv: opisText,
         slike: imageNames,
     }
     getCurrentUserEmail(reportInfo);
@@ -221,8 +197,68 @@ function goToLogin() {
     });
 }
 
+function goToTakeLocation() {
+    frameModule.topmost().navigate({
+        moduleName: 'home/takeLocation',
+        transition: {
+            name: "slide",
+            animated: true,
+            duration: 300
+        }
+    });
+}
+
+function openImageAlert(){
+    let options = {
+        dialogStyle: customDialog.CFAlertStyle.ALERT,
+        title: 'Dodaj slike',
+        textAlignment: customDialog.CFAlertGravity.CENTER_HORIZONTAL,
+        buttons: [
+          {
+            text: 'Kamera',
+            buttonStyle: customDialog.CFAlertActionStyle.POSITIVE,
+            buttonAlignment: customDialog.CFAlertActionAlignment.JUSTIFIED,
+            onClick: function(response) {
+              console.log('Inside OK Response');
+              console.log(response); // Prints Okay
+              openCamera();
+            },
+          },
+          {
+            text: 'Dodaj iz telefona',
+            buttonStyle: customDialog.CFAlertActionStyle.DEFAULT,
+            buttonAlignment: customDialog.CFAlertActionAlignment.JUSTIFIED,
+            onClick: function(response) {
+              console.log('Inside Nope Response');
+              console.log(response); // Prints Nope
+              selectImages();
+            },
+          },
+        ],
+      };
+   
+      cfalertDialogInstance.show(options); // That's about it ;)
+}
+function openOpis(){
+    askForOpis(opisText);
+}
+function askForOpis(defaultText){
+    // inputType property can be dialogs.inputType.password, dialogs.inputType.text, or dialogs.inputType.email.
+    dialogs.prompt({
+        title: "Opis",
+        okButtonText: "Ok",
+        defaultText:defaultText,
+        inputType: dialogs.inputType.text
+    }).then(function (r) {
+        console.log("Dialog result: " + r.result + ", text: " + r.text);
+        opisText=r.text;
+        pageModel.opisDone=true;
+        console.log("pageModel",pageModel);
+    });
+}
+exports.goToTakeLocation = goToTakeLocation;
 exports.onNavigatingTo = onNavigatingTo;
 exports.onDrawerButtonTap = onDrawerButtonTap;
-exports.openCamera = openCamera;
 exports.sendInfo = sendInfo;
-exports.selectImages = selectImages;
+exports.openImageAlert = openImageAlert;
+exports.openOpis = openOpis;

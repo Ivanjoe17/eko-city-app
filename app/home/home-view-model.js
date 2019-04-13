@@ -7,6 +7,7 @@ function HomeViewModel() {
 
     const viewModel = observableModule.fromObject({
         /* Add your view model properties here */
+        opisDone: false,
     });
 
     return viewModel;

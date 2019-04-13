@@ -26,33 +26,33 @@
     </ActionBar>
 
     <StackLayout class="page">
-        <StackLayout id="image-wrapper">
-             <ScrollView orientation="vertical">
-                <FlexboxLayout id="imageContainer" flexWrap="wrap">
+        <GridLayout rows="auto,*" >
+            <StackLayout row="0" id="image-wrapper">
+                <ScrollView orientation="vertical">
+                    <FlexboxLayout id="imageContainer" flexWrap="wrap">
+                        <FlexboxLayout class="add-image-container" tap="openImageAlert" >
+                            <Label text="&#xf067;" class="fa add-image-plus"></Label>
+                        </FlexboxLayout>
+                    </FlexboxLayout>
+                </ScrollView>  
+                
+            </StackLayout>
+            <StackLayout row="1">
+                <FlexboxLayout class="opis-container" tap="openOpis">
+                    <Label  class="opis" text="OPIS"></Label>
+                    <Label  class="{{ opisDone ? 'fa check-icon' : 'fa times-icon' }}" text="{{ opisDone ? '&#xf00c;' : '&#xf00d;' }}"></Label>
                 </FlexboxLayout>
-             </ScrollView>  
-        </StackLayout>
-        <Label tap="openCamera" text="camera2" class="open-camera"></Label>
-         <Label tap="selectImages" text="select" class="select-img"></Label>
-        <TextField hint="Enter text" id="naziv"></TextField>
-        <Label tap="sendInfo" text="prijavi" class="prijavi"></Label>
-         <StackLayout>
-            <Label text="Nice map, huh!" class="title"/>
-            <ContentView height="240" width="240">
-            <!-- IMPORTANT: plugin version 3 uses :MapboxView, lower versions use :Mapbox -->
-            <map:MapboxView
-                accessToken="pk.eyJ1IjoiaXZhbmpvZTE3IiwiYSI6ImNqdGRtazh2aTExcmgzenRmMjdyYmVkNnMifQ.cb0c9V6WpbdS74LpYEDmhQ"
-                mapStyle="traffic_night"
-                latitude="44.8666"
-                longitude="13.8496"
-                disableRotation="true"
-                disableScroll="false"
-                disableTilt="true"
-                showUserLocation="true"
-                mapReady="onMapReady">
-            </map:MapboxView>
-            </ContentView>
-        </StackLayout>
+                <FlexboxLayout class="lokacija-container">
+                    <Label text="&#xf041;" class="fa location-icon margin-item" />
+                    <Label tap="goToTakeLocation" text="lokacija" class="margin-item"></Label>
+                    <FlexboxLayout class="margin-item">
+                        <Label text="lat"></Label>
+                        <Label text="long"></Label>
+                    </FlexboxLayout>
+                </FlexboxLayout>
+                <Button tap="sendInfo" text="Pošalji" class="prijavi"></Button>
+            </StackLayout>
+        </GridLayout>
     </StackLayout>
     
 </Page>

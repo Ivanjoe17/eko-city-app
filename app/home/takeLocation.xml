@@ -1,0 +1,44 @@
+<Page
+    loaded="loaded"
+    class="page"
+    navigatingTo="onNavigatingTo"  
+    xmlns="http://schemas.nativescript.org/tns.xsd"
+    xmlns:map="nativescript-mapbox"
+    id="location-page">
+<!-- 
+    <ActionBar class="action-bar">
+    
+        <NavigationButton ios:visibility="collapsed" icon="res://menu" tap="onDrawerButtonTap"></NavigationButton>
+     
+        <ActionItem icon="res://navigation/menu" 
+            android:visibility="collapsed" 
+            tap="onDrawerButtonTap"
+            ios.position="left">
+        </ActionItem>
+        <Label class="action-bar-title" text=""></Label>
+    </ActionBar> -->
+
+    <GridLayout class="page" rows="*,auto">
+         <StackLayout  row="0" width="100%" height="100%">
+            <ContentView>
+                <!-- IMPORTANT: plugin version 3 uses :MapboxView, lower versions use :Mapbox -->
+                <map:MapboxView
+                    accessToken="pk.eyJ1IjoiaXZhbmpvZTE3IiwiYSI6ImNqdGRtazh2aTExcmgzenRmMjdyYmVkNnMifQ.cb0c9V6WpbdS74LpYEDmhQ"
+                    mapStyle="traffic_night"
+                    latitude="44.8666"
+                    longitude="13.8496"
+                    disableRotation="true"
+                    disableScroll="false"
+                    disableTilt="true"
+                    showUserLocation="true"
+                    mapReady="onMapReady">
+                </map:MapboxView> 
+            </ContentView>
+            
+        </StackLayout>
+        <FlexboxLayout row="1" class="spremi-container" style="{{ showSpremiBtn ? 'visibility:visible;' : 'visibility:collapsed;' }}">
+            <Label text="SPREMI" tap="goBackToPrijava"></Label>
+        </FlexboxLayout>
+    </GridLayout>
+    
+</Page>

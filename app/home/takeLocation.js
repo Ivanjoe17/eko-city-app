@@ -10,12 +10,19 @@ var pageModel = ObservableModule.fromObject({
 var mapbox;
 
 var currentLocation;
-
+var picturesFromPrijava=[];
 function onNavigatingTo(args) {
     page = args.object;
     pageModel.showSpremiBtn=false;
     page.bindingContext = pageModel;
     page.actionBarHidden = true;
+    var gotData=page.navigationContext;
+    
+    if(gotData){
+        if(gotData.pictures){
+            picturesFromPrijava=gotData.pictures;
+        }
+    }
 }
 
 function onDrawerButtonTap(args) {
@@ -73,8 +80,10 @@ function goBackToPrijava() {
             duration: 300
         },
         context:{
-            location:currentLocation
-        }
+            location:currentLocation,
+            pictures:picturesFromPrijava
+        },
+        clearHistory:true
     });
 }
 

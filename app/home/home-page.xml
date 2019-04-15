@@ -42,15 +42,13 @@
                     <Label  class="opis" text="OPIS"></Label>
                     <Label  class="{{ opisDone ? 'fa check-icon' : 'fa times-icon' }}" text="{{ opisDone ? '&#xf00c;' : '&#xf00d;' }}"></Label>
                 </FlexboxLayout>
-                <FlexboxLayout class="lokacija-container">
-                    <Label text="&#xf041;" class="fa location-icon margin-item" />
-                    <Label tap="goToTakeLocation" text="lokacija" class="margin-item"></Label>
-                    <FlexboxLayout class="margin-item">
-                        <Label text="lat"></Label>
-                        <Label text="long"></Label>
-                    </FlexboxLayout>
+                <FlexboxLayout class="lokacija-container" tap="openLokacijaAlert">
+                    <Label  class="lokacija" text="LOKACIJA"></Label>
+                    <Label  class="{{ lokacijaDone ? 'fa check-icon' : 'fa times-icon' }}" text="{{ lokacijaDone ? '&#xf00c;' : '&#xf00d;' }}"></Label>
+                    <!-- <Label tap="goToTakeLocation" text="lokacija" class="margin-item"></Label> -->
                 </FlexboxLayout>
                 <Button tap="sendInfo" text="Pošalji" class="prijavi"></Button>
+                <Button tap="resetPrijava" text="Reset" class="reset"></Button>
             </StackLayout>
         </GridLayout>
     </StackLayout>

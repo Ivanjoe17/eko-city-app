@@ -13,29 +13,63 @@ const session = bghttp.session("file-upload");
 const frameModule = require("tns-core-modules/ui/frame");
 const customDialog = require("nativescript-cfalert-dialog");
 let cfalertDialogInstance = new customDialog.CFAlertDialog();
+var Geolocation = require("nativescript-geolocation");
+var LoadingIndicator = require("nativescript-loading-indicator-new").LoadingIndicator;
+var loader = new LoadingIndicator();
 var mapbox = require("nativescript-mapbox");
 var context = imagepicker.create({ mode: "multiple" }); // use "multiple" for multiple selection
 const prijaveCollection = firebaseApp.firestore().collection("prijave");
 const korisniciCollection = firebaseApp.firestore().collection("korisnici");
 var page;
 let currentPictures = [];
+let currentLocation=[];
 let pageModel = new HomeViewModel();
 var mapbox;
 let opisText="";
 
+
+var loadingOptions = {
+    message: 'Slanje...',
+    progress: 0.65,
+    android: {
+      indeterminate: true,
+      cancelable: false,
+      max: 100,
+      progressNumberFormat: "%1d/%2d",
+      progressPercentFormat: 0.53,
+      progressStyle: 1,
+      secondaryProgress: 1
+    },
+    /* ios: {
+      details: "Additional detail note!",
+      square: false,
+      margin: 10,
+      dimBackground: true,
+      color: "#4B9ED6",
+      mode: // see iOS specific options below
+    } */
+  }
+
+
 function onNavigatingTo(args) {
     page = args.object;
-    
     page.bindingContext = pageModel;
     currentPictures = [];
     var gotData=page.navigationContext;
     if(gotData){
         if(gotData.location){
             console.log(gotData.location);
+            currentLocation=[gotData.location.lat,gotData.location.lng];
+            console.log("currentLocation",currentLocation);
+            pageModel.lokacijaDone=true;
+            currentPictures=gotData.pictures;
+            if(currentPictures.length>0){
+                for(let i=0;i<currentPictures.length;i++){
+                    addImage(currentPictures[i]);
+                }
+            }
         }
     }
-    
-    // openCamera();
 }
 
 function onDrawerButtonTap(args) {
@@ -73,12 +107,31 @@ function addImage(imageAsset) {
     newImage.src = imageAsset;
     newImage.height = 100;
     newImage.width = 100;
-    newImage.className = "picture";
+    newImage.className = "picture addedPicture";
     newImage.stretch = "aspectFill";
     imageContainer.addChild(newImage);
 }
 
 function sendInfo() {
+    let error=0;
+    let txt="";
+    if(currentPictures.length==0){
+        error++;
+        txt+="Nije priložena niti jedna slika."
+    }
+    if(currentLocation.length==0){
+        error++;
+        txt+="Nije priložena lokacija."
+    }
+    if(opisText.length==0){
+        error++;
+        txt+="Nije priložen opis."
+    }
+    if(error>0){
+        openErrorAlert('Pogreška!',txt,'NEGATIVE');
+        return;
+    }
+    loader.show(loadingOptions); 
     let imageNames = [];
     for (let i = 0; i < currentPictures.length; i++) {
         let imageName = generate_random_string(3) + Date.now();
@@ -86,7 +139,9 @@ function sendInfo() {
         uploadImage(currentPictures[i], imageName);
     }
     let reportInfo = {
-        naziv: opisText,
+        opis: opisText,
+        lat:currentLocation[0],
+        lng:currentLocation[1],
         slike: imageNames,
     }
     getCurrentUserEmail(reportInfo);
@@ -94,6 +149,7 @@ function sendInfo() {
 }
 
 function uploadImage(imagePath, imageName) {
+
     // now upload the file with either of the options below:
     firebase.storage.uploadFile({
         // optional, can be omitted since 6.5.0, and also be passed during init() as 'storageBucket' param so we can cache it (find it in the Firebase console)
@@ -112,9 +168,15 @@ function uploadImage(imagePath, imageName) {
     }).then(
         function (uploadedFile) {
             console.log("File uploaded: " + JSON.stringify(uploadedFile));
+            resetPrijava();
+            openErrorAlert('Poslano!','Prijava uspješno poslana.','POSITIVE');
+            loader.hide();
         },
         function (error) {
             console.log("File upload error: " + error);
+            resetPrijava();
+            openErrorAlert('Poslano!','prijava uspješno poslana.','POSITIVE');
+            loader.hide();
         }
     );
 }
@@ -179,7 +241,7 @@ function getCurrentUserEmail(reportInfo) {
             getCityId(reportInfo);
         })
         .catch(function (error) {
-            console.log("Trouble in paradise: " + error)
+            console.log("Trouble in paradise: " + error);
             firebase.logout();
             goToLogin();
         });
@@ -197,6 +259,12 @@ function goToLogin() {
     });
 }
 
+function resetPage() {
+    frameModule.topmost().navigate({
+        moduleName: 'home/home-page',
+        clearHistory: true
+    });
+}
 function goToTakeLocation() {
     frameModule.topmost().navigate({
         moduleName: 'home/takeLocation',
@@ -204,12 +272,16 @@ function goToTakeLocation() {
             name: "slide",
             animated: true,
             duration: 300
-        }
+        },
+        context:{
+            pictures:currentPictures
+        },
+        clearHistory:true
     });
 }
 
 function openImageAlert(){
-    let options = {
+    var options = {
         dialogStyle: customDialog.CFAlertStyle.ALERT,
         title: 'Dodaj slike',
         textAlignment: customDialog.CFAlertGravity.CENTER_HORIZONTAL,
@@ -239,6 +311,61 @@ function openImageAlert(){
    
       cfalertDialogInstance.show(options); // That's about it ;)
 }
+
+function openLokacijaAlert(){
+    var options = {
+        dialogStyle: customDialog.CFAlertStyle.ALERT,
+        title: 'Izaberi lokaciju',
+        textAlignment: customDialog.CFAlertGravity.CENTER_HORIZONTAL,
+        buttons: [
+          {
+            text: 'Moja trenutna lokacija',
+            buttonStyle: customDialog.CFAlertActionStyle.POSITIVE,
+            buttonAlignment: customDialog.CFAlertActionAlignment.JUSTIFIED,
+            onClick: function(response) {
+              console.log('Inside OK Response');
+              console.log(response); // Prints Okay
+              getCurrentPosition();
+            },
+          },
+          {
+            text: 'Odaberi na mapi',
+            buttonStyle: customDialog.CFAlertActionStyle.DEFAULT,
+            buttonAlignment: customDialog.CFAlertActionAlignment.JUSTIFIED,
+            onClick: function(response) {
+              console.log('Inside Nope Response');
+              console.log(response); // Prints Nope
+              goToTakeLocation();
+            },
+          },
+        ],
+      };
+   
+      cfalertDialogInstance.show(options); // That's about it ;)
+}
+function openErrorAlert(title,text,type){
+    var options = {
+        dialogStyle: customDialog.CFAlertStyle.ALERT,
+        title: title,
+        message:text,
+        textAlignment: customDialog.CFAlertGravity.CENTER_HORIZONTAL,
+        buttons: [
+          {
+            text: 'Ok',
+            buttonStyle: customDialog.CFAlertActionStyle[type],
+            buttonAlignment: customDialog.CFAlertActionAlignment.JUSTIFIED,
+            onClick: function(response) {
+              console.log('Inside OK Response');
+              console.log(response); // Prints Okay
+            //   getCurrentPosition();
+            },
+          }
+        ],
+      };
+   
+      cfalertDialogInstance.show(options); // That's about it ;)
+}
+
 function openOpis(){
     askForOpis(opisText);
 }
@@ -252,13 +379,75 @@ function askForOpis(defaultText){
     }).then(function (r) {
         console.log("Dialog result: " + r.result + ", text: " + r.text);
         opisText=r.text;
-        pageModel.opisDone=true;
+        if(opisText.length>0){
+            pageModel.opisDone=true;
+        }
         console.log("pageModel",pageModel);
     });
 }
-exports.goToTakeLocation = goToTakeLocation;
+
+
+ function getCurrentPosition(options) {
+    var settings = Object.assign({
+        'desiredAccuracy': 3,
+        'updateDistance': 10,
+        'maximumAge': 20000,
+        'timeout': 20000
+    }, options || {});
+
+    var p = Promise.resolve() // Start promise chain with a resolved native Promise.
+    .then(function() {
+        if (!Geolocation.isEnabled()) {
+            return Geolocation.enableLocationRequest(); // return a Promise
+        } else {
+            // No need to return anything here.
+            // `undefined` will suffice at next step in the chain.
+        }
+    })
+    .then(function() {
+        if (Geolocation.isEnabled()) {
+            return Geolocation.getCurrentLocation(settings); // return a Promise
+        } else { // <<< necessary to handle case where Geolocation didn't enable.
+            throw new Error('Geolocation could not be enabled');
+        }
+    })
+    .then(function(loc) {
+        if (loc) {
+            console.log("Current location is: " + loc.latitude + ", " + loc.longitude);
+            currentLocation=[loc.latitude,loc.longitude];
+            console.log("currentLocation",currentLocation);
+            pageModel.lokacijaDone=true;
+            return loc;
+        } else { // <<< necessary to handle case where loc was not derived.
+            throw new Error('Geolocation enabled, but failed to derive current location');
+        }
+    })
+    .catch(function(e) {
+        console.error(e);
+        throw e; // Rethrow the error otherwise it is considered caught and the promise chain will continue down its success path.
+        // Alternatively, return a manually-coded default `loc` object.
+    });
+
+    // Now race `p` against a timeout in case enableLocationRequest() hangs.
+    return Promise.race(p, new Promise(function(resolve, reject) {
+        setTimeout(function() {
+            reject(new Error('viewModel.getCurrentPosition() timed out'));
+        }, settings.timeout);
+    }));
+}
+
+function resetPrijava(){
+    currentPictures=[];
+    opisText="";
+    currentLocation=[];
+    pageModel.lokacijaDone=false;
+    pageModel.opisDone=false;
+    resetPage();
+}
+exports.openLokacijaAlert = openLokacijaAlert;
 exports.onNavigatingTo = onNavigatingTo;
 exports.onDrawerButtonTap = onDrawerButtonTap;
 exports.sendInfo = sendInfo;
 exports.openImageAlert = openImageAlert;
 exports.openOpis = openOpis;
+exports.resetPrijava = resetPrijava;

@@ -36,8 +36,8 @@
             </ContentView>
             
         </StackLayout>
-        <FlexboxLayout row="1" class="spremi-container" style="{{ showSpremiBtn ? 'visibility:visible;' : 'visibility:collapsed;' }}">
-            <Label text="SPREMI" tap="goBackToPrijava"></Label>
+        <FlexboxLayout row="1" class="spremi-container" style="{{ showSpremiBtn ? 'visibility:visible;' : 'visibility:collapsed;' }}" tap="goBackToPrijava">
+            <Label text="Gotovo" ></Label>
         </FlexboxLayout>
     </GridLayout>
     

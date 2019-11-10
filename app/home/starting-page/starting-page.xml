@@ -4,15 +4,14 @@
     xmlns="http://schemas.nativescript.org/tns.xsd"
     id="starting-page">
   <!-- <ActionBar class="action-bar">
-        <Label class="action-bar-title" text="Fap Track"></Label>
+        <Label class="action-bar-title" text="Eko City"></Label>
     </ActionBar> -->
 
   <StackLayout orientation="vertical" horizontalAlignment="center" verticalAlignment="center">
-     <!-- <FlexboxLayout class="brand-container"> -->
-          <Image src="~/images/app-icon.png" width="200" height="200" stretch="aspectFill" />
-           <Label class="brand-title" text="Fap Track" textWrap="true"/>
-           <Label text="become powerful." class="footnote" textWrap="true" />
+     <FlexboxLayout class="brand-container">
+           <Label class="brand-title" text="Eko City" textWrap="true"/>
+           <!-- <Label text="become powerful." class="footnote" textWrap="true" />  -->
 
-      <!-- </FlexboxLayout> -->
+      </FlexboxLayout>
   </StackLayout>
 </Page>

@@ -1,3 +1,6 @@
+/* eslint-disable quotes */
+/* eslint-disable no-unused-vars */
+/* eslint-disable no-var */
 var observableModule = require("tns-core-modules/data/observable");
 const app = require("tns-core-modules/application");
 var applicationSettings = require("application-settings");
@@ -13,6 +16,7 @@ firebase.init({
     onAuthStateChanged: function (data) { // optional but useful to immediately re-logon the user when he re-visits your app
         console.log(data.loggedIn ? "Logged in to firebase" : "Logged out from firebase");
         if (data.loggedIn) {
+            // eslint-disable-next-line prefer-template
             console.log("user's email address: " + (data.user.email ? data.user.email : "N/A"));
             isLoggedIn = true;
         }
@@ -22,10 +26,11 @@ firebase.init({
         }
     }
 }).then(
-    function () {
+    () => {
         console.log("firebase.init done");
     },
-    function (error) {
+    (error) => {
+        // eslint-disable-next-line prefer-template
         console.log("firebase.init error: " + error);
     }
 );
@@ -38,7 +43,7 @@ firebase.init({
 let page;
 
 function onLoaded(args) {
-    setTimeout(function () {
+    setTimeout(() => {
         navigateApp();
     }, 800);
     page = args.object;

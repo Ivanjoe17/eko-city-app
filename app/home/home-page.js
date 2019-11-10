@@ -22,23 +22,22 @@ const prijaveCollection = firebaseApp.firestore().collection("prijave");
 const korisniciCollection = firebaseApp.firestore().collection("korisnici");
 var page;
 let currentPictures = [];
-let currentLocation=[];
+let currentLocation = [];
 let pageModel = new HomeViewModel();
 var mapbox;
-let opisText="";
-
+let opisText = "";
 
 var loadingOptions = {
     message: 'Slanje...',
     progress: 0.65,
     android: {
-      indeterminate: true,
-      cancelable: false,
-      max: 100,
-      progressNumberFormat: "%1d/%2d",
-      progressPercentFormat: 0.53,
-      progressStyle: 1,
-      secondaryProgress: 1
+        indeterminate: true,
+        cancelable: false,
+        max: 100,
+        progressNumberFormat: "%1d/%2d",
+        progressPercentFormat: 0.53,
+        progressStyle: 1,
+        secondaryProgress: 1
     },
     /* ios: {
       details: "Additional detail note!",
@@ -48,23 +47,22 @@ var loadingOptions = {
       color: "#4B9ED6",
       mode: // see iOS specific options below
     } */
-  }
-
+}
 
 function onNavigatingTo(args) {
     page = args.object;
     page.bindingContext = pageModel;
     currentPictures = [];
-    var gotData=page.navigationContext;
-    if(gotData){
-        if(gotData.location){
+    var gotData = page.navigationContext;
+    if (gotData) {
+        if (gotData.location) {
             console.log(gotData.location);
-            currentLocation=[gotData.location.lat,gotData.location.lng];
-            console.log("currentLocation",currentLocation);
-            pageModel.lokacijaDone=true;
-            currentPictures=gotData.pictures;
-            if(currentPictures.length>0){
-                for(let i=0;i<currentPictures.length;i++){
+            currentLocation = [gotData.location.lat, gotData.location.lng];
+            console.log("currentLocation", currentLocation);
+            pageModel.lokacijaDone = true;
+            currentPictures = gotData.pictures;
+            if (currentPictures.length > 0) {
+                for (let i = 0; i < currentPictures.length; i++) {
                     addImage(currentPictures[i]);
                 }
             }
@@ -113,25 +111,25 @@ function addImage(imageAsset) {
 }
 
 function sendInfo() {
-    let error=0;
-    let txt="";
-    if(currentPictures.length==0){
+    let error = 0;
+    let txt = "";
+    if (currentPictures.length == 0) {
         error++;
-        txt+="Nije priložena niti jedna slika."
+        txt += "Nije priložena niti jedna slika."
     }
-    if(currentLocation.length==0){
+    if (currentLocation.length == 0) {
         error++;
-        txt+="Nije priložena lokacija."
+        txt += "Nije priložena lokacija."
     }
-    if(opisText.length==0){
+    if (opisText.length == 0) {
         error++;
-        txt+="Nije priložen opis."
+        txt += "Nije priložen opis."
     }
-    if(error>0){
-        openErrorAlert('Pogreška!',txt,'NEGATIVE');
+    if (error > 0) {
+        openErrorAlert('Pogreška!', txt, 'NEGATIVE');
         return;
     }
-    loader.show(loadingOptions); 
+    loader.show(loadingOptions);
     let imageNames = [];
     for (let i = 0; i < currentPictures.length; i++) {
         let imageName = generate_random_string(3) + Date.now();
@@ -140,9 +138,10 @@ function sendInfo() {
     }
     let reportInfo = {
         opis: opisText,
-        lat:currentLocation[0],
-        lng:currentLocation[1],
+        lat: currentLocation[0],
+        lng: currentLocation[1],
         slike: imageNames,
+        created: firebase.firestore.FieldValue.serverTimestamp()
     }
     getCurrentUserEmail(reportInfo);
 
@@ -169,13 +168,13 @@ function uploadImage(imagePath, imageName) {
         function (uploadedFile) {
             console.log("File uploaded: " + JSON.stringify(uploadedFile));
             resetPrijava();
-            openErrorAlert('Poslano!','Prijava uspješno poslana.','POSITIVE');
+            openErrorAlert('Poslano!', 'Prijava uspješno poslana.', 'POSITIVE');
             loader.hide();
         },
         function (error) {
             console.log("File upload error: " + error);
             resetPrijava();
-            openErrorAlert('Poslano!','prijava uspješno poslana.','POSITIVE');
+            openErrorAlert('Poslano!', 'prijava uspješno poslana.', 'POSITIVE');
             loader.hide();
         }
     );
@@ -265,6 +264,7 @@ function resetPage() {
         clearHistory: true
     });
 }
+
 function goToTakeLocation() {
     frameModule.topmost().navigate({
         moduleName: 'home/takeLocation',
@@ -273,121 +273,118 @@ function goToTakeLocation() {
             animated: true,
             duration: 300
         },
-        context:{
-            pictures:currentPictures
+        context: {
+            pictures: currentPictures
         },
-        clearHistory:true
+        clearHistory: true
     });
 }
 
-function openImageAlert(){
+function openImageAlert() {
     var options = {
         dialogStyle: customDialog.CFAlertStyle.ALERT,
         title: 'Dodaj slike',
         textAlignment: customDialog.CFAlertGravity.CENTER_HORIZONTAL,
-        buttons: [
-          {
-            text: 'Kamera',
-            buttonStyle: customDialog.CFAlertActionStyle.POSITIVE,
-            buttonAlignment: customDialog.CFAlertActionAlignment.JUSTIFIED,
-            onClick: function(response) {
-              console.log('Inside OK Response');
-              console.log(response); // Prints Okay
-              openCamera();
+        buttons: [{
+                text: 'Kamera',
+                buttonStyle: customDialog.CFAlertActionStyle.POSITIVE,
+                buttonAlignment: customDialog.CFAlertActionAlignment.JUSTIFIED,
+                onClick: function (response) {
+                    console.log('Inside OK Response');
+                    console.log(response); // Prints Okay
+                    openCamera();
+                },
             },
-          },
-          {
-            text: 'Dodaj iz telefona',
-            buttonStyle: customDialog.CFAlertActionStyle.DEFAULT,
-            buttonAlignment: customDialog.CFAlertActionAlignment.JUSTIFIED,
-            onClick: function(response) {
-              console.log('Inside Nope Response');
-              console.log(response); // Prints Nope
-              selectImages();
+            {
+                text: 'Dodaj iz telefona',
+                buttonStyle: customDialog.CFAlertActionStyle.DEFAULT,
+                buttonAlignment: customDialog.CFAlertActionAlignment.JUSTIFIED,
+                onClick: function (response) {
+                    console.log('Inside Nope Response');
+                    console.log(response); // Prints Nope
+                    selectImages();
+                },
             },
-          },
         ],
-      };
-   
-      cfalertDialogInstance.show(options); // That's about it ;)
+    };
+
+    cfalertDialogInstance.show(options); // That's about it ;)
 }
 
-function openLokacijaAlert(){
+function openLokacijaAlert() {
     var options = {
         dialogStyle: customDialog.CFAlertStyle.ALERT,
         title: 'Izaberi lokaciju',
         textAlignment: customDialog.CFAlertGravity.CENTER_HORIZONTAL,
-        buttons: [
-          {
-            text: 'Moja trenutna lokacija',
-            buttonStyle: customDialog.CFAlertActionStyle.POSITIVE,
-            buttonAlignment: customDialog.CFAlertActionAlignment.JUSTIFIED,
-            onClick: function(response) {
-              console.log('Inside OK Response');
-              console.log(response); // Prints Okay
-              getCurrentPosition();
+        buttons: [{
+                text: 'Moja trenutna lokacija',
+                buttonStyle: customDialog.CFAlertActionStyle.POSITIVE,
+                buttonAlignment: customDialog.CFAlertActionAlignment.JUSTIFIED,
+                onClick: function (response) {
+                    console.log('Inside OK Response');
+                    console.log(response); // Prints Okay
+                    getCurrentPosition();
+                },
             },
-          },
-          {
-            text: 'Odaberi na mapi',
-            buttonStyle: customDialog.CFAlertActionStyle.DEFAULT,
-            buttonAlignment: customDialog.CFAlertActionAlignment.JUSTIFIED,
-            onClick: function(response) {
-              console.log('Inside Nope Response');
-              console.log(response); // Prints Nope
-              goToTakeLocation();
+            {
+                text: 'Odaberi na mapi',
+                buttonStyle: customDialog.CFAlertActionStyle.DEFAULT,
+                buttonAlignment: customDialog.CFAlertActionAlignment.JUSTIFIED,
+                onClick: function (response) {
+                    console.log('Inside Nope Response');
+                    console.log(response); // Prints Nope
+                    goToTakeLocation();
+                },
             },
-          },
         ],
-      };
-   
-      cfalertDialogInstance.show(options); // That's about it ;)
+    };
+
+    cfalertDialogInstance.show(options); // That's about it ;)
 }
-function openErrorAlert(title,text,type){
+
+function openErrorAlert(title, text, type) {
     var options = {
         dialogStyle: customDialog.CFAlertStyle.ALERT,
         title: title,
-        message:text,
+        message: text,
         textAlignment: customDialog.CFAlertGravity.CENTER_HORIZONTAL,
-        buttons: [
-          {
+        buttons: [{
             text: 'Ok',
             buttonStyle: customDialog.CFAlertActionStyle[type],
             buttonAlignment: customDialog.CFAlertActionAlignment.JUSTIFIED,
-            onClick: function(response) {
-              console.log('Inside OK Response');
-              console.log(response); // Prints Okay
-            //   getCurrentPosition();
+            onClick: function (response) {
+                console.log('Inside OK Response');
+                console.log(response); // Prints Okay
+                //   getCurrentPosition();
             },
-          }
-        ],
-      };
-   
-      cfalertDialogInstance.show(options); // That's about it ;)
+        }],
+    };
+
+    cfalertDialogInstance.show(options); // That's about it ;)
 }
 
-function openOpis(){
+function openOpis() {
     askForOpis(opisText);
 }
-function askForOpis(defaultText){
+
+function askForOpis(defaultText) {
     // inputType property can be dialogs.inputType.password, dialogs.inputType.text, or dialogs.inputType.email.
     dialogs.prompt({
         title: "Opis",
         okButtonText: "Ok",
-        defaultText:defaultText,
+        defaultText: defaultText,
         inputType: dialogs.inputType.text
     }).then(function (r) {
         console.log("Dialog result: " + r.result + ", text: " + r.text);
-        opisText=r.text;
-        if(opisText.length>0){
-            pageModel.opisDone=true;
+        opisText = r.text;
+        if (opisText.length > 0) {
+            pageModel.opisDone = true;
         }
-        console.log("pageModel",pageModel);
+        console.log("pageModel", pageModel);
     });
 }
 
-
- function getCurrentPosition(options) {
+function getCurrentPosition(options) {
     var settings = Object.assign({
         'desiredAccuracy': 3,
         'updateDistance': 10,
@@ -396,52 +393,55 @@ function askForOpis(defaultText){
     }, options || {});
 
     var p = Promise.resolve() // Start promise chain with a resolved native Promise.
-    .then(function() {
-        if (!Geolocation.isEnabled()) {
-            return Geolocation.enableLocationRequest(); // return a Promise
-        } else {
-            // No need to return anything here.
-            // `undefined` will suffice at next step in the chain.
-        }
-    })
-    .then(function() {
-        if (Geolocation.isEnabled()) {
-            return Geolocation.getCurrentLocation(settings); // return a Promise
-        } else { // <<< necessary to handle case where Geolocation didn't enable.
-            throw new Error('Geolocation could not be enabled');
-        }
-    })
-    .then(function(loc) {
-        if (loc) {
-            console.log("Current location is: " + loc.latitude + ", " + loc.longitude);
-            currentLocation=[loc.latitude,loc.longitude];
-            console.log("currentLocation",currentLocation);
-            pageModel.lokacijaDone=true;
-            return loc;
-        } else { // <<< necessary to handle case where loc was not derived.
-            throw new Error('Geolocation enabled, but failed to derive current location');
-        }
-    })
-    .catch(function(e) {
-        console.error(e);
-        throw e; // Rethrow the error otherwise it is considered caught and the promise chain will continue down its success path.
-        // Alternatively, return a manually-coded default `loc` object.
-    });
+        .then(function () {
+            if (!Geolocation.isEnabled()) {
+                return Geolocation.enableLocationRequest(); // return a Promise
+            }
+            else {
+                // No need to return anything here.
+                // `undefined` will suffice at next step in the chain.
+            }
+        })
+        .then(function () {
+            if (Geolocation.isEnabled()) {
+                return Geolocation.getCurrentLocation(settings); // return a Promise
+            }
+            else { // <<< necessary to handle case where Geolocation didn't enable.
+                throw new Error('Geolocation could not be enabled');
+            }
+        })
+        .then(function (loc) {
+            if (loc) {
+                console.log("Current location is: " + loc.latitude + ", " + loc.longitude);
+                currentLocation = [loc.latitude, loc.longitude];
+                console.log("currentLocation", currentLocation);
+                pageModel.lokacijaDone = true;
+                return loc;
+            }
+            else { // <<< necessary to handle case where loc was not derived.
+                throw new Error('Geolocation enabled, but failed to derive current location');
+            }
+        })
+        .catch(function (e) {
+            console.error(e);
+            throw e; // Rethrow the error otherwise it is considered caught and the promise chain will continue down its success path.
+            // Alternatively, return a manually-coded default `loc` object.
+        });
 
     // Now race `p` against a timeout in case enableLocationRequest() hangs.
-    return Promise.race(p, new Promise(function(resolve, reject) {
-        setTimeout(function() {
+    return Promise.race(p, new Promise(function (resolve, reject) {
+        setTimeout(function () {
             reject(new Error('viewModel.getCurrentPosition() timed out'));
         }, settings.timeout);
     }));
 }
 
-function resetPrijava(){
-    currentPictures=[];
-    opisText="";
-    currentLocation=[];
-    pageModel.lokacijaDone=false;
-    pageModel.opisDone=false;
+function resetPrijava() {
+    currentPictures = [];
+    opisText = "";
+    currentLocation = [];
+    pageModel.lokacijaDone = false;
+    pageModel.opisDone = false;
     resetPage();
 }
 exports.openLokacijaAlert = openLokacijaAlert;

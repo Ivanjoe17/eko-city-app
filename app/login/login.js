@@ -1,3 +1,11 @@
+/* eslint-disable prefer-arrow-callback */
+/* eslint-disable arrow-parens */
+/* eslint-disable prefer-const */
+/* eslint-disable one-var */
+/* eslint-disable comma-dangle */
+/* eslint-disable quotes */
+/* eslint-disable no-unused-vars */
+/* eslint-disable no-var */
 var dialogs = require("tns-core-modules/ui/dialogs");
 var frameModule = require("tns-core-modules/ui/frame");
 var observableModule = require("tns-core-modules/data/observable");
@@ -9,7 +17,7 @@ const gradoviCollection = firebaseApp.firestore().collection("gradovi");
 var observable = require("data/observable");
 var observableArray = require("data/observable-array");
 var ValueList = require("nativescript-drop-down").ValueList;
-console.log('TCL: ValueList', ValueList)
+console.log('TCL: ValueList', ValueList);
 var pageData = new observableModule.fromObject({
     email: "",
     password: "",
@@ -45,6 +53,7 @@ function loadDropdownItems() {
 exports.loaded = function (args) {
     page = args.object;
     page.bindingContext = pageData;
+    page.actionBarHidden = true;
     loadDropdownItems();
 };
 exports.toggleDisplay = function () {

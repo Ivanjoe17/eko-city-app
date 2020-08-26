@@ -22,7 +22,7 @@
             tap="onDrawerButtonTap"
             ios.position="left">
         </ActionItem>
-        <Label class="action-bar-title" text=""></Label>
+        <Label class="action-bar-title" text="Prijava"></Label>
     </ActionBar>
 
     <StackLayout class="page">
@@ -47,8 +47,8 @@
                     <Label  class="{{ lokacijaDone ? 'fa check-icon' : 'fa times-icon' }}" text="{{ lokacijaDone ? '&#xf00c;' : '&#xf00d;' }}"></Label>
                     <!-- <Label tap="goToTakeLocation" text="lokacija" class="margin-item"></Label> -->
                 </FlexboxLayout>
+                <Button tap="resetPrijava" text="Resetiraj" class="reset"></Button>
                 <Button tap="sendInfo" text="Pošalji" class="prijavi"></Button>
-                <Button tap="resetPrijava" text="Reset" class="reset"></Button>
             </StackLayout>
         </GridLayout>
     </StackLayout>

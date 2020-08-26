@@ -11,9 +11,9 @@ http://docs.telerik.com/devtools/nativescript-ui/Controls/NativeScript/SideDrawe
     <nsDrawer:RadSideDrawer.drawerContent>
         <GridLayout rows="auto, *" class="sidedrawer sidedrawer-left">
             <StackLayout class="sidedrawer-header">
-                <Label class="sidedrawer-header-image fa" text="&#xf2bd;" />
+           <!--      <Label class="sidedrawer-header-image fa" text="&#xf2bd;" />
                 <Label class="sidedrawer-header-brand" text="User Name" />
-                <Label class="footnote" text="username@mail.com" />
+                <Label class="footnote" text="username@mail.com" /> -->
             </StackLayout>
 
             <ScrollView row="1">
@@ -21,16 +21,16 @@ http://docs.telerik.com/devtools/nativescript-ui/Controls/NativeScript/SideDrawe
                     <GridLayout columns="auto, *" class="{{ 'sidedrawer-list-item' + (selectedPage === 'Home' ? ' selected': '') }}"
                         route="home/home-page" title="Home" tap="onNavigationItemTap">
                         <Label row="0" col="0" text="&#xf015;" class="fa" />
-                        <Label row="0" col="1" text="Home" class="p-r-10" />
+                        <Label row="0" col="1" text="Početna" class="p-r-10" />
                     </GridLayout>
-
+<!-- 
                     <GridLayout columns="auto, *" class="{{ 'sidedrawer-list-item' + (selectedPage === 'Browse' ? ' selected': '') }}"
                         route="browse/browse-page" title="Browse" tap="onNavigationItemTap">
                         <Label row="0" col="0" text="&#xf1ea;" class="fa" />
-                        <Label row="0" col="1" text="Browse" class="p-r-10" />
-                    </GridLayout>
+                        <Label row="0" col="1" text="Prijave" class="p-r-10" />
+                    </GridLayout> -->
 
-                    <GridLayout columns="auto, *" class="{{ 'sidedrawer-list-item' + (selectedPage === 'Search' ? ' selected': '') }}"
+                 <!--    <GridLayout columns="auto, *" class="{{ 'sidedrawer-list-item' + (selectedPage === 'Search' ? ' selected': '') }}"
                         route="search/search-page" title="Search" tap="onNavigationItemTap">
                         <Label row="0" col="0" text="&#xf002;" class="fa" />
                         <Label row="0" col="1" text="Search" class="p-r-10" />
@@ -41,13 +41,13 @@ http://docs.telerik.com/devtools/nativescript-ui/Controls/NativeScript/SideDrawe
                         <Label row="0" col="0" text="&#xf005;" class="fa" />
                         <Label row="0" col="1" text="Featured" class="p-r-10" />
                     </GridLayout>
-
+ -->
                     <StackLayout class="hr-light"></StackLayout>
 
                     <GridLayout columns="auto, *" class="{{ 'sidedrawer-list-item' + (selectedPage === 'Settings' ? ' selected': '') }}"
                         route="settings/settings-page" title="Settings" tap="onNavigationItemTap">
                         <Label row="0" col="0" text="&#xf013;" class="fa" />
-                        <Label row="0" col="1" text="Settings" class="p-r-10" />
+                        <Label row="0" col="1" text="Postavke" class="p-r-10" />
                     </GridLayout>
                 </StackLayout>
             </ScrollView>

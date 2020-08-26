@@ -22,7 +22,8 @@
     </ActionBar>
 
     <GridLayout class="page-content">
-       <Label text="logout" textWrap="true" tap="logout" />
-       
+        <StackLayout class="logout">
+            <Button text="logout" textWrap="true" tap="logout"> </Button>
+        </StackLayout>
     </GridLayout>
 </Page>

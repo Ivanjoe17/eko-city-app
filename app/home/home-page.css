@@ -17,13 +17,17 @@
     padding: 20 10;
 }
 
+.reset{
+    margin:10 100;
+    color:rgba(255, 0, 0, 0.801);
 
+}
 .prijavi{
-    width:100;
-    background-color: transparent;
+    background-color: rgb(48, 48, 48);
     border-width:0.1;
     border-color:transparent;
-    color:blue;
+    color:rgb(0, 255, 13);
+    margin:20 10;
 }
 
 .add-image-container{
